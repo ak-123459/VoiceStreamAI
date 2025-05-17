@@ -128,9 +128,16 @@ class FasterWhisperASR(ASRInterface):
             if client.config["language"] is None
             else language_codes.get(client.config["language"].lower())
         )
+
+        start_time = time.time()        
+        
         segments, info = self.asr_pipeline.transcribe(
             file_path, word_timestamps=True, language=language
         )
+
+        end_time = time.time()
+
+        transcription_time = end_time - start_time  # ⏱️
 
         segments = list(segments)  # The transcription will actually run here.
         os.remove(file_path)
@@ -152,5 +159,7 @@ class FasterWhisperASR(ASRInterface):
                 }
                 for w in flattened_words
             ],
+
+            'transcription_time':transcription_time
         }
         return to_return
